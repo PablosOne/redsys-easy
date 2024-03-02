@@ -4,8 +4,6 @@
 
 ```ts
 
-import type { fetch as fetch_2 } from 'undici';
-
 // @public
 export const assertSuccessfulResponse: (responseParams: {
     Ds_Response?: string | undefined;
@@ -51,7 +49,14 @@ export const create3DSv2ChallengeForm: (emv3dsV2Challenge: ThreeDSv2ChallengeOut
 export type CreateRedirectForm = (paramsInput: RedirectInputParams) => RedirectForm;
 
 // @public
-export const createRedsysAPI: (config: RedsysConfig) => RedsysAPI;
+export const createRedsysAPI: (config: RedsysConfig) => {
+    restIniciaPeticion: (paramsInput: RestIniciaPeticionInputParams) => Promise<RestIniciaPeticionOutputParams>;
+    restTrataPeticion: (paramsInput: RestTrataPeticionInputParams) => Promise<RestTrataPeticionOutputParams>;
+    createRedirectForm: (paramsInput: RedirectInputParams) => RedirectForm;
+    processRestNotification: (body: ResponseJSONSuccess) => RestNotificationOutputParams;
+    processSoapNotification: (xml: string) => SoapNotificationOutputParams;
+    createSoapNotificationAnswer: (order: string, allow: boolean) => string;
+};
 
 // @public
 export type CreateSoapNotificationAnswer = (
@@ -219,8 +224,6 @@ export interface RedsysAPI {
 
 // @public
 export interface RedsysConfig {
-    // (undocumented)
-    fetch?: typeof fetch_2 | undefined;
     // (undocumented)
     secretKey: string;
     // (undocumented)

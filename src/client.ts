@@ -1,6 +1,3 @@
-import type { fetch as Fetch } from 'undici';
-import { fetch as defaultFetch } from 'undici';
-
 import { RedsysError } from './errors';
 
 import {
@@ -70,7 +67,6 @@ export const SANDBOX_URLS: UrlsConfig = {
  * @public
  */
 export interface RedsysConfig {
-  fetch?: typeof Fetch | undefined;
   secretKey: string;
   urls: UrlsConfig;
 }
@@ -154,9 +150,7 @@ export interface RedsysAPI {
  *
  * @public
  */
-export const createRedsysAPI = (config: RedsysConfig): RedsysAPI => {
-  const fetch: typeof Fetch = config.fetch ?? defaultFetch;
-
+export const createRedsysAPI = (config: RedsysConfig) => {
   if (!config.secretKey || typeof config.secretKey !== 'string') {
     throw new RedsysError('A secretKey key must be provided');
   }
@@ -180,12 +174,7 @@ export const createRedsysAPI = (config: RedsysConfig): RedsysAPI => {
     return await jsonRequest<
       RestIniciaPeticionInputParams,
       RestIniciaPeticionOutputParams
-    >({
-      fetch,
-      url: config.urls.restIniciaPeticion,
-      merchantKey: config.secretKey,
-      rawRequestParams: paramsInput
-    });
+    >(config.urls.restIniciaPeticion, config.secretKey, paramsInput);
   };
 
   /**
@@ -197,12 +186,7 @@ export const createRedsysAPI = (config: RedsysConfig): RedsysAPI => {
     const result = await jsonRequest<
       RestTrataPeticionInputParams,
       RestTrataPeticionOutputParams
-    >({
-      fetch,
-      url: config.urls.restTrataPeticion,
-      merchantKey: config.secretKey,
-      rawRequestParams: paramsInput
-    });
+    >(config.urls.restTrataPeticion, config.secretKey, paramsInput);
 
     return result;
   };
