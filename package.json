@@ -25,7 +25,6 @@
   "module": "lib/index.esm.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "lint": "eslint --ext js,ts .",
     "build:clean": "rimraf lib",
     "build:code": "rollup -c rollup.config.mjs",
     "build:api": "api-extractor run --local",
@@ -41,14 +40,6 @@
   "files": [
     "lib"
   ],
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "lint-staged": {
-    "*.{js,ts}": "eslint"
-  },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged",
     "commit-msg": "pnpm exec commitlint -e"
