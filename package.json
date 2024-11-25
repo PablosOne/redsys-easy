@@ -45,12 +45,11 @@
     "commit-msg": "pnpm exec commitlint -e"
   },
   "dependencies": {
-    "@types/node-fetch": "^2.5.11",
+    "axios": "^1.7.7",
     "base64url": "^3.0.1",
     "dayjs": "^1.11.9",
     "decimal.js": "^10.4.3",
     "fast-xml-parser": "^4.2.7",
-    "node-fetch": "^2.6.1",
     "tslib": "^2.6.1"
   },
   "devDependencies": {
@@ -63,8 +62,8 @@
     "@types/cheerio": "^0.22.31",
     "@types/jest": "^29.5.3",
     "@types/koa": "^2.13.8",
-    "@types/koa-bodyparser": "^4.3.10",
     "@types/koa__router": "^12.0.0",
+    "@types/koa-bodyparser": "^4.3.10",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "cheerio": "1.0.0-rc.12",

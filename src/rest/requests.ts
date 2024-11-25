@@ -1,5 +1,5 @@
-import fetch from 'node-fetch';
 
+import axios from 'axios';
 import { HTTPError, GatewayError } from '../errors';
 
 import type {
@@ -24,34 +24,42 @@ export const jsonRequest = async <
 ): Promise<ResponseParams> => {
   const payload = serializeAndSignJSONRequest(merchantKey, rawRequestParams);
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      // 'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
-  });
+  try {
+    const response = await axios.post<ResponseJSONSuccess | ResponseJSONError>(
+      url,
+      payload,
+      {
+        headers: {
+          'Content-Type': false,
+          // 'Access-Control-Allow-Origin': '*' // Ensure to match your CORS policy
+        }
+      }
+    );
+    const responseData = response.data;
+    if ('errorCode' in responseData) {
+      throw new GatewayError({
+        code: responseData.errorCode,
+        response: responseData
+      });
+    }
 
-  const responseData = await (response.json() as Promise<
-    ResponseJSONSuccess | ResponseJSONError
-  >);
+    return deserializeAndVerifyJSONResponse<ResponseParams>(
+      merchantKey,
+      responseData
+    );
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const response = error.response?.data as
+        | ResponseJSONSuccess
+        | ResponseJSONError
+        | undefined;
 
-  if (!response.ok) {
-    throw new HTTPError({
-      code: response.status,
-      response: responseData
-    });
+      throw new HTTPError({
+        code: error.response?.status ?? 500,
+        response
+      });
+    }
+
+    throw error; // Rethrow unexpected errors
   }
-
-  if ('errorCode' in responseData) {
-    throw new GatewayError({
-      code: responseData.errorCode,
-      response: responseData
-    });
-  }
-
-  return deserializeAndVerifyJSONResponse<ResponseParams>(
-    merchantKey,
-    responseData
-  );
 };
