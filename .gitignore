@@ -40,7 +40,7 @@ node_modules/
 *.sublime*
 
 # Build output
-lib
+#lib
 
 integration-settings.js
 integration-settings.json
